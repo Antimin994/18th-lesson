@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+      .modal {
+        width: 60vw;
+        height: 300px;
+        position: absolute;
+        border: 1px solid #ccc;
+        border-radius: 15px;
+        box-shadow: 0px 0px 5px 3px #ccc;
+        padding: 15px;
+        left: calc(50vw - 30vw);
+        top: calc(50vh - 150px);
+      }
+        
+    </style>
+</head>
+<body>
+  <div class="modal">
+    <h1>SALE!!!!</h1>
+    <h3>только до <span class="endSalesDay">2021.04.15</span>!!!!</h3>
+    <br>
+    <h3>Осталось времени</h3>
+    <span id="expiry">00:00:00</span>
+    <button class="sale-popup-bay">Купить</button>
+    <button class="sale-popup-close">Закрыть</button>
+  </div>
+    <script>
+
+        var popup = document.querySelector('.modal');
+        var salePopupBay = document.querySelector('.sale-popup-bay');
+        var salePopupClose = document.querySelector('.sale-popup-close');
+        salePopupBay.addEventListener('click', popupBay);
+        salePopupClose.addEventListener('click', popupClose);
+        var expiry = document.getElementById('expiry');
+        var endSalesDay = (document.querySelector('.endSalesDay').textContent + " 23:59:59");
+        
+        timer();
+        
+        function timer() {
+        var now = new Date().getTime();
+        const expiryTime = Date.parse(endSalesDay);
+        var diffTime = expiryTime - now;
+        var ms = Math.floor(diffTime % 1000);
+        var s = Math.floor(diffTime / 1000 % 60);
+        if (s < 10) {s = '0' + s};
+        var m = Math.floor(diffTime / 60000 % 60);
+        if (m < 10) {m = '0' + m};
+        var h = Math.floor(diffTime / 3600000 % 24);
+        if (h < 10) {h = '0' + h};
+        var d = Math.floor(diffTime / 86400000);
+        expiry.textContent = `${d} дней ${h}:${m}:${s}`;
+            
+        if (diffTime <= 0) {popup.style.display = "none";}
+        }
+        
+        setInterval(timer, 1000);
+        
+        
+        console.log(endSalesDay);
+        console.log(now);
+        console.log(expiryTime);
+        console.log(diffTime);
+        console.log(d + " дней " + h + ":" + m + ":" + s);
+        console.log(expiry);
+
+        function popupBay() {
+          localStorage.setItem('Sale', true);
+          localStorage.setItem('ShowSalePopup', {isShow: false,time: 0});
+            var info = JSON.stringify(localStorage.getItem('ShowSalePopup'));
+            console.log(info)
+            
+            popup.style.display = "none";
+        }
+
+        function popupClose() {
+          localStorage.setItem('Sale', false)
+          localStorage.setItem('ShowSalePopup', 
+            {
+              isShow: true,
+              time: 15000
+            })
+            popup.style.display = "none";
+            setTimeout(popupOpen, 10000);
+        }
+        
+        function popupOpen() {
+           popup.style.display = "block"; 
+        }
+        
+    </script>
+</body>
+</html>
